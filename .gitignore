@@ -1,1 +1,11 @@
 /target
+
+# 環境変数（シークレット混入防止）
+.env
+.env.*
+!.env.example
+
+# OS / エディタの作業ファイル
+.DS_Store
+.idea/
+.vscode/

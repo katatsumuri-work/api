@@ -4,16 +4,32 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+# Web フレームワーク本体
 axum = "0.8.9"
+# シリアライズ・デシリアライズ
 serde = { version = "1.0.228", features = ["derive"] }
-tokio = { version = "1.52.2", features = ["full"] }
-tower-http = { version = "0.6.8", features = ["trace"] }
+# 非同期ランタイム（必要な機能のみ有効化）
+tokio = { version = "1.52.2", features = ["rt-multi-thread", "macros", "net"] }
+# HTTP ミドルウェア（CORS／タイムアウト／ボディ上限／ヘッダ付与／トレース）
+tower-http = { version = "0.6.8", features = [
+    "cors",
+    "limit",
+    "set-header",
+    "timeout",
+    "trace",
+] }
+# 構造化ログ
 tracing = "0.1.44"
 tracing-subscriber = "0.3.23"
+# OpenAPI スキーマ生成
 utoipa = { version = "5.5.0", features = ["axum_extras"] }
+# axum ルータと OpenAPI の橋渡し
 utoipa-axum = "0.2.0"
+# Swagger UI 配信（アセットを同梱）
 utoipa-swagger-ui = { version = "9.0.2", features = ["axum"] }
 
 [dev-dependencies]
-serde_json = "1.0.149"
+# テスト用に Service::oneshot を使うため
 tower = { version = "0.5.3", features = ["util"] }
+# レスポンスボディの JSON パース
+serde_json = "1.0.149"
