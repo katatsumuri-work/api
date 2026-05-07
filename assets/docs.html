@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>合同会社カタツムリワークス</title>
+    <link rel="stylesheet" href="/_swagger-assets/swagger-ui.css">
+    <style>
+        body { margin: 0; }
+        .swagger-ui .topbar { display: none !important; }
+        .ksw-header {
+            background: #2d6e4e;
+            color: #fff;
+            padding: 14px 24px;
+            font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+        .ksw-header a { color: #fff; text-decoration: none; }
+        .ksw-header a:hover { opacity: 0.85; }
+    </style>
+</head>
+<body>
+    <div class="ksw-header">
+        <a href="https://katatsumuri.work">合同会社カタツムリワークス</a>
+    </div>
+    <div id="swagger-ui"></div>
+    <script src="/_swagger-assets/swagger-ui-bundle.js" charset="UTF-8"></script>
+    <script src="/_swagger-assets/swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+    <script>
+        window.onload = function () {
+            window.ui = SwaggerUIBundle({
+                url: "/api-docs/openapi.json",
+                dom_id: "#swagger-ui",
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                layout: "StandaloneLayout"
+            });
+        };
+    </script>
+</body>
+</html>
