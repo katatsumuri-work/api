@@ -10,8 +10,7 @@ use utoipa_swagger_ui::SwaggerUi;
 #[derive(OpenApi)]
 #[openapi(
     info(
-        title = "katatsumuri-api",
-        description = "合同会社カタツムリワークスの公開 API",
+        title = "Katatsumuri-works LLC",
         version = "0.1.0",
     ),
     tags(
@@ -43,7 +42,7 @@ const DOCS_HTML: &str = r##"<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>合同会社カタツムリワークス API</title>
+    <title>合同会社カタツムリワークス</title>
     <link rel="stylesheet" href="/_swagger-assets/swagger-ui.css">
     <style>
         body { margin: 0; }
@@ -56,19 +55,14 @@ const DOCS_HTML: &str = r##"<!DOCTYPE html>
             font-size: 18px;
             font-weight: 600;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
         }
         .ksw-header a { color: #fff; text-decoration: none; }
         .ksw-header a:hover { opacity: 0.85; }
-        .ksw-header .subtitle { font-weight: 400; opacity: 0.85; font-size: 14px; }
     </style>
 </head>
 <body>
     <div class="ksw-header">
         <a href="https://katatsumuri.work">合同会社カタツムリワークス</a>
-        <span class="subtitle">API ドキュメント</span>
     </div>
     <div id="swagger-ui"></div>
     <script src="/_swagger-assets/swagger-ui-bundle.js" charset="UTF-8"></script>
@@ -171,7 +165,7 @@ mod tests {
         let body = to_bytes(response.into_body(), usize::MAX).await.unwrap();
         let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
 
-        assert_eq!(json["info"]["title"], "katatsumuri-api");
+        assert_eq!(json["info"]["title"], "Katatsumuri-works LLC");
         assert!(
             json["paths"]["/health"].is_object(),
             "/health が OpenAPI ドキュメントに含まれていません"
