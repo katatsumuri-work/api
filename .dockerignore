@@ -1,0 +1,20 @@
+# Rust ビルド成果物（イメージに持ち込まない／キャッシュを汚さない）
+/target
+
+# バージョン管理・CI 関連
+.git
+.github
+.gitignore
+
+# エージェント／エディタ設定
+.claude
+CLAUDE.md
+GEMINI.md
+AGENTS.md
+
+# ドキュメント
+README.md
+
+# Docker 関連自身
+Dockerfile
+.dockerignore
