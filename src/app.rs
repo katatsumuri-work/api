@@ -13,7 +13,12 @@ use utoipa_swagger_ui::SwaggerUi;
 
 use crate::config::AppConfig;
 use crate::docs::docs;
+use crate::handlers::careers::{__path_list_careers, list_careers};
+use crate::handlers::company::{__path_company, company};
+use crate::handlers::contact::{__path_contact, contact};
 use crate::handlers::health::{__path_health, health};
+use crate::handlers::members::{__path_get_member, __path_list_members, get_member, list_members};
+use crate::handlers::services::{__path_list_services, list_services};
 use crate::openapi::ApiDoc;
 
 const CSP_VALUE: &str = "default-src 'self'; \
@@ -29,6 +34,12 @@ const HSTS_VALUE: &str = "max-age=63072000; includeSubDomains";
 pub fn build_app(config: &AppConfig) -> Router {
     let (router, api) = OpenApiRouter::with_openapi(ApiDoc::openapi())
         .routes(routes!(health))
+        .routes(routes!(company))
+        .routes(routes!(list_members))
+        .routes(routes!(get_member))
+        .routes(routes!(list_services))
+        .routes(routes!(list_careers))
+        .routes(routes!(contact))
         .split_for_parts();
 
     let swagger_assets = SwaggerUi::new("/_swagger-assets").url("/api-docs/openapi.json", api);
