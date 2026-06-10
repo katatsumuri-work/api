@@ -174,3 +174,147 @@ async fn cors_allowlistに含まれるoriginは許可される() {
         Some("https://katatsumuri.work"),
     );
 }
+
+/// レスポンスボディを JSON 値としてパースするテスト用ヘルパ。
+async fn json_body(response: axum::response::Response) -> serde_json::Value {
+    let body = to_bytes(response.into_body(), BODY_LIMIT_FOR_TEST)
+        .await
+        .unwrap();
+    serde_json::from_slice(&body).unwrap()
+}
+
+async fn get(uri: &str) -> axum::response::Response {
+    test_app()
+        .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
+        .await
+        .unwrap()
+}
+
+#[tokio::test]
+async fn company_は会社情報の_json_を返す() {
+    let response = get("/company").await;
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json = json_body(response).await;
+    assert_eq!(json["name"], "合同会社カタツムリワークス");
+    assert_eq!(json["website"], "https://katatsumuri.work");
+    // 公開ポリシー: 住所は市区まで、資本金は含めない。
+    assert_eq!(json["location"], "東京都港区");
+    assert!(
+        json.get("capital").is_none(),
+        "資本金が公開レスポンスに含まれています"
+    );
+}
+
+#[tokio::test]
+async fn members_はメンバー配列を返す() {
+    let response = get("/members").await;
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json = json_body(response).await;
+    let members = json.as_array().expect("配列ではありません");
+    assert!(!members.is_empty(), "メンバーが 1 件もありません");
+    assert_eq!(members[0]["id"], "yamazaki");
+}
+
+#[tokio::test]
+async fn members_id_は存在するメンバーを返す() {
+    let response = get("/members/yamazaki").await;
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json = json_body(response).await;
+    assert_eq!(json["id"], "yamazaki");
+    assert_eq!(json["role"], "代表社員");
+}
+
+#[tokio::test]
+async fn members_id_は存在しない_id_で_404_を返す() {
+    let response = get("/members/unknown").await;
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+}
+
+#[tokio::test]
+async fn services_はサービス配列を返す() {
+    let response = get("/services").await;
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json = json_body(response).await;
+    let services = json.as_array().expect("配列ではありません");
+    assert!(!services.is_empty(), "サービスが 1 件もありません");
+}
+
+#[tokio::test]
+async fn careers_は採用情報配列を返す() {
+    let response = get("/careers").await;
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json = json_body(response).await;
+    assert!(json.is_array(), "配列ではありません");
+}
+
+#[tokio::test]
+async fn contact_は正しい入力で_202_を返す() {
+    let payload = serde_json::json!({
+        "name": "問い合わせ 太郎",
+        "email": "taro@example.com",
+        "message": "お仕事を依頼したいです。",
+    });
+    let response = test_app()
+        .oneshot(
+            Request::builder()
+                .method(Method::POST)
+                .uri("/contact")
+                .header(header::CONTENT_TYPE, "application/json")
+                .body(Body::from(payload.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::ACCEPTED);
+    let json = json_body(response).await;
+    assert_eq!(json["status"], "accepted");
+}
+
+#[tokio::test]
+async fn contact_は必須項目が空なら_400_を返す() {
+    let payload = serde_json::json!({
+        "name": "",
+        "email": "taro@example.com",
+        "message": "本文",
+    });
+    let response = test_app()
+        .oneshot(
+            Request::builder()
+                .method(Method::POST)
+                .uri("/contact")
+                .header(header::CONTENT_TYPE, "application/json")
+                .body(Body::from(payload.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+}
+
+#[tokio::test]
+async fn openapi_jsonは新規エンドポイントを含む() {
+    let response = get("/api-docs/openapi.json").await;
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json = json_body(response).await;
+    for path in [
+        "/company",
+        "/members",
+        "/members/{id}",
+        "/services",
+        "/careers",
+        "/contact",
+    ] {
+        assert!(
+            json["paths"][path].is_object(),
+            "{path} が OpenAPI ドキュメントに含まれていません"
+        );
+    }
+}
