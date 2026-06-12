@@ -30,10 +30,9 @@ impl Company {
         Self {
             name: "合同会社カタツムリワークス".to_string(),
             legal_name: "Katatsumuri Works LLC".to_string(),
-            // TODO: 設立年月日の確定値に差し替える（現在はダミー）。
-            founded: "2026-04-01".to_string(),
-            // TODO: 代表社員氏名の公開用表記に差し替える（現在はダミー）。
-            representative: "山崎 太郎".to_string(),
+            // TODO: 設立年月日の確定値（登記日）に差し替える（現在は仮置き）。
+            founded: "2026-06-11".to_string(),
+            representative: "山﨑 亮".to_string(),
             location: "東京都港区".to_string(),
             website: "https://katatsumuri.work".to_string(),
         }
