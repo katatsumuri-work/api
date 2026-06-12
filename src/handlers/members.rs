@@ -25,8 +25,7 @@ impl Member {
     fn all() -> Vec<Member> {
         vec![Member {
             id: "yamazaki".to_string(),
-            // TODO: 公開用の氏名表記に差し替える（現在はダミー）。
-            name: "山崎 太郎".to_string(),
+            name: "山﨑 亮".to_string(),
             role: "代表社員".to_string(),
             bio: "合同会社カタツムリワークスの代表。AI とソフトウェア開発を担当しています。"
                 .to_string(),
