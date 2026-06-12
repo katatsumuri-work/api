@@ -198,12 +198,15 @@ async fn company_は会社情報の_json_を返す() {
     let json = json_body(response).await;
     assert_eq!(json["name"], "合同会社カタツムリワークス");
     assert_eq!(json["website"], "https://katatsumuri.work");
-    // 公開ポリシー: 住所は市区まで、資本金は含めない。
-    assert_eq!(json["location"], "東京都港区");
-    assert!(
-        json.get("capital").is_none(),
-        "資本金が公開レスポンスに含まれています"
+    // サイトの会社概要を賄うフル項目を返す（住所フル・資本金・事業年度・連絡先）。
+    assert_eq!(
+        json["address"],
+        "東京都港区浜松町２丁目２番１５号　浜松町ダイヤビル２Ｆ"
     );
+    assert_eq!(json["capital"], "500,000円");
+    assert_eq!(json["fiscal_year"], "6月1日 〜 翌年5月31日");
+    assert_eq!(json["email"], "info@katatsumuri.work");
+    assert_eq!(json["representative"], "山﨑 亮");
 }
 
 #[tokio::test]

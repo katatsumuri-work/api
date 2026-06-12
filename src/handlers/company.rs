@@ -2,9 +2,7 @@ use axum::Json;
 use serde::Serialize;
 use utoipa::ToSchema;
 
-/// 会社情報。
-///
-/// 公開用のため、本店所在地は市区まで（番地は含めない）、資本金は含めない方針。
+/// 会社情報。サイト（katatsumuri.work）が表示する会社概要の唯一の情報源。
 #[derive(Debug, Clone, Serialize, ToSchema)]
 pub struct Company {
     /// 商号（日本語）
@@ -15,8 +13,14 @@ pub struct Company {
     pub founded: String,
     /// 代表社員の氏名
     pub representative: String,
-    /// 本店所在地（公開用は市区まで）
-    pub location: String,
+    /// 本店所在地
+    pub address: String,
+    /// 資本金
+    pub capital: String,
+    /// 事業年度
+    pub fiscal_year: String,
+    /// 問い合わせ先メールアドレス
+    pub email: String,
     /// 公式サイト URL
     pub website: String,
 }
@@ -33,7 +37,10 @@ impl Company {
             // TODO: 設立年月日の確定値（登記日）に差し替える（現在は仮置き）。
             founded: "2026-06-11".to_string(),
             representative: "山﨑 亮".to_string(),
-            location: "東京都港区".to_string(),
+            address: "東京都港区浜松町２丁目２番１５号　浜松町ダイヤビル２Ｆ".to_string(),
+            capital: "500,000円".to_string(),
+            fiscal_year: "6月1日 〜 翌年5月31日".to_string(),
+            email: "info@katatsumuri.work".to_string(),
             website: "https://katatsumuri.work".to_string(),
         }
     }
